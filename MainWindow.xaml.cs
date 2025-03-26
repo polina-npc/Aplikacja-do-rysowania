@@ -11,10 +11,12 @@ namespace DrawingApp
     {
         private Polyline currentLine;
         private Brush currentColor = Brushes.Black;
+        private double strokeThickness = 2;
 
         public MainWindow()
         {
             InitializeComponent();
+            UpdateThicknessLabel();
         }
 
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
@@ -24,7 +26,7 @@ namespace DrawingApp
                 currentLine = new Polyline
                 {
                     Stroke = currentColor,
-                    StrokeThickness = 2,
+                    StrokeThickness = strokeThickness,
                     Points = new PointCollection { e.GetPosition(DrawCanvas) }
                 };
                 DrawCanvas.Children.Add(currentLine);
@@ -49,6 +51,29 @@ namespace DrawingApp
             if (e.NewValue.HasValue)
             {
                 currentColor = new SolidColorBrush(e.NewValue.Value);
+            }
+        }
+
+        private void IncreaseThickness_Click(object sender, RoutedEventArgs e)
+        {
+            strokeThickness += 1;
+            UpdateThicknessLabel();
+        }
+
+        private void DecreaseThickness_Click(object sender, RoutedEventArgs e)
+        {
+            if (strokeThickness > 1)
+            {
+                strokeThickness -= 1;
+                UpdateThicknessLabel();
+            }
+        }
+
+        private void UpdateThicknessLabel()
+        {
+            if (ThicknessLabel != null)
+            {
+                ThicknessLabel.Content = $"Thickness: {strokeThickness}";
             }
         }
     }
