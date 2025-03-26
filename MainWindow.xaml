@@ -8,8 +8,11 @@
                 MouseDown="Canvas_MouseDown"
                 MouseMove="Canvas_MouseMove"/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-            <Button Content="Clear" Click="ClearCanvas_Click" Padding="10" Margin="5"/>
-            <xctk:ColorPicker Name="ColorPicker" SelectedColorChanged="ColorPicker_SelectedColorChanged" Margin="5"/>
+            <Label x:Name="ThicknessLabel" Content="Thickness: 2" Height="31"/>
+            <Button Content="Increase Thickness" Click="IncreaseThickness_Click" Padding="10" Margin="5"/>
+            <Button Content="Decrease Thickness" Click="DecreaseThickness_Click" Padding="10" Margin="5"/>
+            <Button Content="Clear" Click="ClearCanvas_Click" Padding="10" Height="38" Width="50"/>
+            <xctk:ColorPicker x:Name="ColorPicker" SelectedColorChanged="ColorPicker_SelectedColorChanged" Height="38" Width="97"/>
         </StackPanel>
     </Grid>
 </Window>
