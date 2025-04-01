@@ -1,11 +1,10 @@
-﻿using System.Windows;
+﻿using Microsoft.Win32;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
-using Microsoft.Win32;
-using System.Collections.Generic;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace DrawingApp
 {
@@ -14,17 +13,16 @@ namespace DrawingApp
         private Polyline currentLine;
         private Brush currentColor = Brushes.Black;
         private double strokeThickness = 2;
-        private string currentTool = "Pen";
-        private List<UIElement> elements = new List<UIElement>(); 
-        private int undoIndex = -1; 
-        private string currentBrushType = "Pencil"; 
+        private byte currentOpacity = 128; 
+        private bool isErasing = false; 
+        private double currentZoom = 1.0;
 
         public MainWindow()
         {
             InitializeComponent();
         }
 
-       private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
+        private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
@@ -34,23 +32,6 @@ namespace DrawingApp
                     StrokeThickness = strokeThickness,
                     Points = new PointCollection { e.GetPosition(DrawCanvas) }
                 };
-
-                if (currentBrushType == "Pencil")
-                {
-                    
-                    currentLine.StrokeThickness = 1;
-                }
-                else if (currentBrushType == "Brush")
-                {
-                   
-                    currentLine.StrokeThickness = 5;
-                }
-                else if (currentBrushType == "Marker")
-                {
-                   
-                    currentLine.StrokeThickness = 8;
-                }
-
                 DrawCanvas.Children.Add(currentLine);
             }
         }
@@ -63,86 +44,62 @@ namespace DrawingApp
             }
         }
 
+        private void BrushSelectionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (BrushSelectionComboBox.SelectedItem is ComboBoxItem selectedItem)
+            {
+                switch (selectedItem.Content.ToString())
+                {
+                    case "✏ Pencil":
+                        currentColor = Brushes.Black;
+                        strokeThickness = 1;
+                        break;
+                    case "🖊 Marker":
+                        currentColor = new SolidColorBrush(Color.FromArgb(currentOpacity, 0, 0, 0));
+                        strokeThickness = 5;
+                        break;
+                    case "🖌 Bristle Brush":
+                        currentColor = Brushes.SaddleBrown;
+                        strokeThickness = 3;
+                        break;
+                    case "🧽 Eraser" :
+                        isErasing = true; 
+                        currentColor = Brushes.White; 
+                        strokeThickness = 10; 
+                        break;
+                }
+            }
+        }
+
+
+        private void ThicknessSelectionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ThicknessSelectionComboBox.SelectedItem is ComboBoxItem selectedItem)
+            {
+                switch (selectedItem.Content.ToString())
+                {
+                    case "▫ Very Thin":
+                        strokeThickness = 0.5;
+                        break;
+                    case "▪ Thin":
+                        strokeThickness = 2;
+                        break;
+                    case "◼ Normal":
+                        strokeThickness = 4;
+                        break;
+                    case "⬛ Thick":
+                        strokeThickness = 6;
+                        break;
+                    case "🔲 Extra Thick":
+                        strokeThickness = 8;
+                        break;
+                }
+            }
+        }
         private void ClearCanvas_Click(object sender, RoutedEventArgs e)
         {
             DrawCanvas.Children.Clear();
         }
-
-        private void ColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
-        {
-            if (e.NewValue.HasValue)
-            {
-                currentColor = new SolidColorBrush(e.NewValue.Value);
-            }
-        }
-
-        private void ThicknessComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (ThicknessComboBox.SelectedItem is ComboBoxItem selectedItem)
-            {
-                strokeThickness = Convert.ToDouble(selectedItem.Tag);
-                ThicknessLabel.Content = $"Thickness: {strokeThickness}";
-            }
-        }
-
-        private void BrushTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (BrushTypeComboBox.SelectedItem is ComboBoxItem selectedItem)
-            {
-                currentBrushType = selectedItem.Tag.ToString();
-            }
-        }
-
-      
-        private void AddText_Click(object sender, RoutedEventArgs e)
-        {
-            var textBlock = new TextBlock
-            {
-                Text = "Text",
-                Foreground = currentColor,
-                FontSize = 20
-            };
-            Canvas.SetLeft(textBlock, 100);
-            Canvas.SetTop(textBlock, 100);
-            DrawCanvas.Children.Add(textBlock);
-            elements.Add(textBlock);
-        }
-
-        private void DrawRectangle_Click(object sender, RoutedEventArgs e)
-        {
-            currentTool = "Rectangle";
-        }
-
-     
-        private void AddToHistory()
-        {
-            if (undoIndex < elements.Count - 1)
-            {
-                elements.RemoveRange(undoIndex + 1, elements.Count - undoIndex - 1);
-            }
-            undoIndex++;
-        }
-
-        private void Undo_Click(object sender, RoutedEventArgs e)
-        {
-            if (undoIndex >= 0)
-            {
-                var element = elements[undoIndex];
-                DrawCanvas.Children.Remove(element);
-                undoIndex--;
-            }
-        }
-
-        private void Redo_Click(object sender, RoutedEventArgs e)
-        {
-            if (undoIndex < elements.Count - 1)
-            {
-                undoIndex++;
-                var element = elements[undoIndex];
-                DrawCanvas.Children.Add(element);
-            }
-        }
-
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             var dlg = new SaveFileDialog();
@@ -159,6 +116,36 @@ namespace DrawingApp
                     encoder.Save(stream);
                 }
             }
+        }
+
+        private void ColorSelection_Click(object sender, RoutedPropertyChangedEventArgs<Color?> e)
+        {
+            if (e.NewValue.HasValue)
+            {
+                currentColor = new SolidColorBrush(Color.FromArgb(currentOpacity, e.NewValue.Value.R, e.NewValue.Value.G, e.NewValue.Value.B));
+            }
+        }
+        
+        private void ZoomIn_Click(object sender, RoutedEventArgs e)
+        {
+            currentZoom += 0.1;
+            ApplyZoom();
+        }
+
+        private void ZoomOut_Click(object sender, RoutedEventArgs e)
+        {
+            currentZoom -= 0.1;
+            if (currentZoom < 0.1) currentZoom = 0.1; 
+            ApplyZoom();
+        }
+
+        private void ApplyZoom()
+        {
+            var transform = new ScaleTransform(currentZoom, currentZoom);
+            DrawCanvas.RenderTransform = transform;
+
+            CanvasScrollViewer.ScrollToVerticalOffset(0);
+            CanvasScrollViewer.ScrollToHorizontalOffset(0); 
         }
     }
 }

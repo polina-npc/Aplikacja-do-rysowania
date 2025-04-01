@@ -2,69 +2,42 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        Title="Drawing App" Height="600" Width="1000" Background="#F0F0F0">
-    <Window.Resources>
+        Title="Drawing App" Height="600" Width="814" Background="#1E1E1E">
     
-        <Style TargetType="Button">
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Width" Value="120"/>
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="Background" Value="#0078D4"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderBrush" Value="#0060A2"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Cursor" Value="Hand"/>
-        </Style>
-
-    
-        <Style TargetType="Button" x:Key="HoverButton">
-            <Setter Property="Background" Value="#005A8D"/>
-        </Style>
-    </Window.Resources>
-
     <Grid>
-        <DockPanel LastChildFill="True">
-        
-            <StackPanel DockPanel.Dock="Left" Width="150" Background="#FFFFFF" VerticalAlignment="Top">
-                
-                <Button Click="ClearCanvas_Click" Margin="5" Width="112">
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="https://www.clker.com/cliparts/X/a/w/z/S/D/clear-button-grey-hi.png" Width="85" Height="54"/>
-                        <TextBlock VerticalAlignment="Center" Margin="5,0,0,0"/>
-                    </StackPanel>
-                </Button>
-
-              
-                <ComboBox Name="ThicknessComboBox" SelectionChanged="ThicknessComboBox_SelectionChanged" Margin="5">
-                    <ComboBoxItem Content="1" Tag="1"/>
-                    <ComboBoxItem Content="2" Tag="2"/>
-                    <ComboBoxItem Content="3" Tag="3"/>
-                    <ComboBoxItem Content="4" Tag="4"/>
-                    <ComboBoxItem Content="5" Tag="5"/>
-                </ComboBox>
-
-             
-                <ComboBox Name="BrushTypeComboBox" SelectionChanged="BrushTypeComboBox_SelectionChanged" Margin="5">
-                    <ComboBoxItem Content="Pencil" Tag="Pencil"/>
-                    <ComboBoxItem Content="Brush" Tag="Brush"/>
-                    <ComboBoxItem Content="Marker" Tag="Marker"/>
-                </ComboBox>
-
-           
-                <xctk:ColorPicker Name="ColorPicker" SelectedColorChanged="ColorPicker_SelectedColorChanged" Margin="5"/>
-                <Label Name="ThicknessLabel" Content="Thickness: 2" Margin="5"/>
-
-                <Button Content="Undo" Click="Undo_Click" Padding="10" Margin="5"/>
-                <Button Content="Redo" Click="Redo_Click" Padding="10" Margin="5"/>
-                <Button Content="Save" Click="Save_Click" Padding="10" Margin="5"/>
-
-
-            </StackPanel>
-
-          
+        <ScrollViewer Name="CanvasScrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
             <Canvas Name="DrawCanvas" Background="White"
-                    MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove"/>
-        </DockPanel>
+                    MouseDown="Canvas_MouseDown"
+                    MouseMove="Canvas_MouseMove" Margin="10"
+                    Width="2000" Height="2000"/>
+        </ScrollViewer>
+        
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Background="#252526" Width="773" Margin="10,0,0,482" RenderTransformOrigin="0.5,0.5">
+            
+            <ComboBox Name="BrushSelectionComboBox" SelectionChanged="BrushSelectionComboBox_SelectionChanged" Width="120" Margin="27" Background="White" Foreground="#191970" Height="36">
+                <ComboBoxItem Content="✏ Pencil"/>
+                <ComboBoxItem Content="🖊 Marker"/>
+                <ComboBoxItem Content="🖌 Bristle Brush"/>
+                <ComboBoxItem Content="🧽 Eraser"/>
+            </ComboBox>
+
+            <ComboBox Name="ThicknessSelectionComboBox" SelectionChanged="ThicknessSelectionComboBox_SelectionChanged" Width="120" Margin="10" Background="White" Foreground="#191970" Height="36">
+                <ComboBoxItem Content="▫ Very Thin"/>
+                <ComboBoxItem Content="▪ Thin"/>
+                <ComboBoxItem Content="◼ Normal"/>
+                <ComboBoxItem Content="⬛ Thick"/>
+                <ComboBoxItem Content="🔲 Extra Thick"/>
+            </ComboBox>
+
+            <xctk:ColorPicker Name="ColorSelectionButton" SelectedColorChanged="ColorSelection_Click" Margin="20" Height="36" Width="91"/>
+            <Button Content="Clear" Click="ClearCanvas_Click"  Width="120" Margin="20" Background="White" Foreground="#191970" Height="36" RenderTransformOrigin="2.96,0.618" />
+            <Button Content="Save" Click="Save_Click" Width="120" Margin="1" Background="White" Foreground="#191970" Height="36"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left"  Background="#252526" Width="773" Margin="10,508,0,17">
+            <Button Content="Zoom In" Width="80" Margin="5" Click="ZoomIn_Click"/>
+            <Button Content="Zoom Out" Width="80" Margin="5" Click="ZoomOut_Click"/>
+        </StackPanel>
+
     </Grid>
 </Window>
