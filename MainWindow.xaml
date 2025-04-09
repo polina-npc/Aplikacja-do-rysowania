@@ -8,11 +8,11 @@
         <Grid x:Name="LoadingScreen">
             
             <Grid.Background>
-                <ImageBrush ImageSource="Assets\bliss.png" Stretch="UniformToFill"/>
+                <ImageBrush ImageSource="C:\Users\Поліна\source\repos\proga_2.0\proga_2.0\Assets\bliss.png" Stretch="UniformToFill"/>
             </Grid.Background>
 
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                <Image Source="Assets\xp_icon.png" Width="100" Height="100" Margin="0,0,0,20"/>
+                <Image Source="C:\Users\Поліна\source\repos\proga_2.0\proga_2.0\Assets\xp_icon.png" Width="100" Height="100" Margin="0,0,0,20"/>
                 <TextBlock x:Name="LoadingText" Text="Loading...Please wait" FontSize="20" Foreground="White" HorizontalAlignment="Center" Margin="0,0,0,20"/>
             </StackPanel>
             
@@ -79,14 +79,14 @@
                     </LinearGradientBrush>
                 </StackPanel.Background>
 
-                <Button Content="Zoom In" Width="90" Margin="10,0" Height="30"
+                <Button Content="Zoom In" Click="ZoomIn_Click" Width="90" Margin="10,0" Height="30"
                         Background="#F0F0F0" Foreground="Black" BorderBrush="#808080">
                     <Button.Effect>
                         <DropShadowEffect Color="Gray" ShadowDepth="3" BlurRadius="5"/>
                     </Button.Effect>
                 </Button>
 
-                <Button Content="Zoom Out" Width="90" Margin="20,0" Height="30"
+                <Button Content="Zoom Out" Click="ZoomOut_Click" Width="90" Margin="20,0" Height="30"
                         Background="#F0F0F0" Foreground="Black" BorderBrush="#808080">
                     <Button.Effect>
                         <DropShadowEffect Color="Gray" ShadowDepth="3" BlurRadius="5"/>
